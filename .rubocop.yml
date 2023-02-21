@@ -1,0 +1,25 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  AllowedMethods: ['describe', 'context']
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*'
+
+Layout/LineLength:
+  AllowedPatterns: ['(\A|\s)#']
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - node_modules
+    - db/schema.rb
+    - db/migrate/*
+    - bin/*
