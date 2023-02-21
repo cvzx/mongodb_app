@@ -37,8 +37,8 @@ yarn-debug.log*
 .solargraph.yml
 .nvimlog
 .env
-/Dokerfile.nvim
-/Dokerfile.solar
+/Dockerfile.nvim
+/Dockerfile.solar
 /dcnvim.yml
 /tags
 *coverage
