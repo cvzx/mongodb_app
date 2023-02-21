@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app:cached
+    user: "${UID}:${GID}"
+    environment:
+      - BEYOND_CLIENT_ID="${BEYOND_CLIENT_ID}"
+      - BEYOND_CLIENT_SECRET="${BEYOND_CLIENT_SECRET}"
+      - BEYOND_AUTH_CODE="${BEYOND_AUTH_CODE}"
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes: 
+      - db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db:
+    driver: local
