@@ -11,8 +11,18 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def show
+    fetching = reservations_service.find(params[:id])
+
+    if fetching.success?
+      render json: { reservation: fetching.result }, status: :ok
+    else
+      render json: { errors: fetching.errors }, status: :unprocessable_entity
+    end
+  end
+
   def create
-    creating = reservations_service.create
+    creating = reservations_service.create(reservation_params)
 
     if creating.success?
       render json: { reservation: creating.result }, status: :ok
@@ -22,7 +32,7 @@ class ReservationsController < ApplicationController
   end
 
   def update
-    updating = reservations_service.update
+    updating = reservations_service.update(params[:id], reservation_params)
 
     if updating.success?
       render json: { reservation: updating.result }, status: :ok
@@ -32,7 +42,7 @@ class ReservationsController < ApplicationController
   end
 
   def destroy
-    deleting = reservations_service.delete
+    deleting = reservations_service.delete(params[:id])
 
     if deleting.success?
       head :ok
@@ -42,6 +52,11 @@ class ReservationsController < ApplicationController
   end
 
   private
+
+  def reservation_params
+    params.require(:reservation).permit(:hotel_name, :price, :currency, :entry_date,
+                                        :departure_date, :guest_name, :guest_email)
+  end
 
   def reservations_service
     ReservationsService.new

@@ -14,12 +14,16 @@ class ReservationsService
     end
   end
 
-  def initialize(repo = nil)
+  def initialize(repo = InMemoryReservationRepository.new)
     @repo = repo
   end
 
   def list_all
     as_result { repo.all }
+  end
+
+  def find(id)
+    as_result { repo.find(id) }
   end
 
   def create(attributes)

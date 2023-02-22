@@ -10,7 +10,7 @@ FactoryBot.define do
     price { rand(1..10_000) }
     currency { 'EUR' }
     entry_date { DateTime.now.beginning_of_day }
-    departure_date { DateTime.now + 2.days }
+    departure_date { DateTime.now.beginning_of_day + 2.days }
     guest_name { Faker::Name.name }
     guest_email { Faker::Internet.email }
 

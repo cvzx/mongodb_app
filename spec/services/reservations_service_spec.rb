@@ -43,6 +43,43 @@ RSpec.describe ReservationsService do
     end
   end
 
+  describe '#find' do
+    subject(:find_reservation) { reservations_service.find(id) }
+
+    let(:id) { reservation.id }
+    let(:reservation) { build(:reservation) }
+
+    before do
+      allow(repo).to receive(:find).with(id).and_return(reservation)
+    end
+
+    context 'when success' do
+      it 'returns successful result' do
+        expect(find_reservation).to be_success
+      end
+
+      it 'returns reservation' do
+        expect(find_reservation.result).to eq(reservation)
+      end
+    end
+
+    context 'when fails' do
+      let(:error) { StandardError.new('test error') }
+
+      before do
+        allow(repo).to receive(:find).and_raise(error)
+      end
+
+      it 'returns failed result' do
+        expect(find_reservation).not_to be_success
+      end
+
+      it 'returns errors' do
+        expect(find_reservation.errors).to eq([error.message])
+      end
+    end
+  end
+
   describe '#create' do
     subject(:create_reservation) { reservations_service.create(attributes) }
 
