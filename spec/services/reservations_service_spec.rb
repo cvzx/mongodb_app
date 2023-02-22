@@ -5,12 +5,16 @@ require 'rails_helper'
 RSpec.describe ReservationsService do
   subject(:reservations_service) { described_class.new(repo) }
 
-  let(:repo) do
-    double(all: [1, 2, 3], create: nil)
-  end
+  let(:repo) { double }
 
   describe '#list_all' do
     subject(:fetch_all_reservations) { reservations_service.list_all }
+
+    let(:reservations) { build_list(:reservation, 3) }
+
+    before do
+      allow(repo).to receive(:all).and_return(reservations)
+    end
 
     context 'when success' do
       it 'returns successful result' do
@@ -18,7 +22,7 @@ RSpec.describe ReservationsService do
       end
 
       it 'returns list off all reservations' do
-        expect(fetch_all_reservations.result).to eq([1, 2, 3])
+        expect(fetch_all_reservations.result).to eq(reservations)
       end
     end
 
@@ -42,12 +46,11 @@ RSpec.describe ReservationsService do
   describe '#create' do
     subject(:create_reservation) { reservations_service.create(attributes) }
 
-    let(:attributes) do
-      {
-        hotel_name: 'test hotel',
-        price: 1234,
-        guest_name: 'test guest'
-      }
+    let(:attributes) { attributes_for(:reservation) }
+    let(:reservation) { build(:reservation, attributes) }
+
+    before do
+      allow(repo).to receive(:create).and_return(reservation)
     end
 
     it 'creates reservation in repository' do
@@ -61,7 +64,6 @@ RSpec.describe ReservationsService do
         allow(repo).to receive(:create).and_return(reservation)
       end
 
-      let(:reservation) { double(attributes) }
 
       it 'returns successful result' do
         expect(create_reservation).to be_success
@@ -93,26 +95,10 @@ RSpec.describe ReservationsService do
     subject(:update_reservation) { reservations_service.update(id, new_attributes) }
 
     let(:id) { 123 }
-
-    let(:reservation) { double(old_attributes) }
-    let(:updated_reservation) { double(new_attributes) }
-
-    let(:old_attributes) do
-      {
-        id:,
-        hotel_name: 'test',
-        price: 111,
-        guest_name: 'test'
-      }
-    end
-
-    let(:new_attributes) do
-      {
-        hotel_name: 'test hotel',
-        price: 1234,
-        guest_name: 'test guest'
-      }
-    end
+    let(:old_attributes) { attributes_for(:reservation).merge(id:) }
+    let(:new_attributes) { attributes_for(:reservation) }
+    let(:reservation) { build(:reservation, old_attributes) }
+    let(:updated_reservation) { build(:reservation, new_attributes) }
 
     before do
       allow(repo).to receive(:find).with(id).and_return(reservation)
@@ -156,16 +142,7 @@ RSpec.describe ReservationsService do
     subject(:delete_reservation) { reservations_service.delete(id) }
 
     let(:id) { 123 }
-    let(:reservation) { double(attributes) }
-
-    let(:attributes) do
-      {
-        id:,
-        hotel_name: 'test hotel',
-        price: 1234,
-        guest_name: 'test guest'
-      }
-    end
+    let(:reservation) { build(:reservation, id:) }
 
     before do
       allow(repo).to receive(:find).with(id).and_return(reservation)
