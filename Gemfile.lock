@@ -78,11 +78,31 @@ GEM
     date (3.3.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
+    dry-core (1.0.0)
+      concurrent-ruby (~> 1.0)
+      zeitwerk (~> 2.6)
+    dry-inflector (1.0.0)
+    dry-logic (1.5.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.0, < 2)
+      zeitwerk (~> 2.6)
+    dry-struct (1.6.0)
+      dry-core (~> 1.0, < 2)
+      dry-types (>= 1.7, < 2)
+      ice_nine (~> 0.11)
+      zeitwerk (~> 2.6)
+    dry-types (1.7.1)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.0)
+      dry-inflector (~> 1.0)
+      dry-logic (~> 1.4)
+      zeitwerk (~> 2.6)
     erubi (1.12.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    ice_nine (0.11.2)
     json (2.6.3)
     loofah (2.19.1)
       crass (~> 1.0.2)
@@ -229,6 +249,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  dry-struct
   pry-byebug
   pry-rails
   puma (~> 5.0)
