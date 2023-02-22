@@ -15,7 +15,7 @@ RSpec.describe ReservationsController do
 
   describe 'GET index' do
     let(:list_all_result) { double(:success, success?: true, result: reservations) }
-    let(:reservations) { [1, 2, 3] }
+    let(:reservations) { build_list(:reservation, 3) }
 
     before do
       allow(mock_reservations_service).to receive(:list_all).and_return(list_all_result)
@@ -29,13 +29,13 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns list of reservations' do
-        expect(JSON.parse(response.body)).to eq({ 'reservations' => reservations })
+        expect(JSON.parse(response.body)).to eq({ 'reservations' => reservations.map(&:as_json) })
       end
     end
 
     context 'when fails' do
       let(:list_all_result) { double(:fail, success?: false, errors: errors) }
-      let(:errors) { [4, 5, 6] }
+      let(:errors) { ['error1', 'error3', 'error3'] }
 
       it 'returns :unprocessable_entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -49,7 +49,7 @@ RSpec.describe ReservationsController do
 
   describe 'POST create' do
     let(:creating_result) { double(:success, success?: true, result: reservation) }
-    let(:reservation) { 'test reservation' }
+    let(:reservation) { build(:reservation) }
 
     before do
       allow(mock_reservations_service).to receive(:create).and_return(creating_result)
@@ -63,13 +63,13 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns created reservation' do
-        expect(JSON.parse(response.body)).to eq({ 'reservation' => reservation })
+        expect(JSON.parse(response.body)).to eq({ 'reservation' => reservation.as_json })
       end
     end
 
     context 'when fails' do
       let(:creating_result) { double(:fail, success?: false, errors: errors) }
-      let(:errors) { [4, 5, 6] }
+      let(:errors) { ['error1', 'error2', 'error3'] }
 
       it 'returns :unprocessable_entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -83,7 +83,7 @@ RSpec.describe ReservationsController do
 
   describe 'PUT update' do
     let(:updating_result) { double(:success, success?: true, result: reservation) }
-    let(:reservation) { 'test reservation' }
+    let(:reservation) { build(:reservation) }
 
     before do
       allow(mock_reservations_service).to receive(:update).and_return(updating_result)
@@ -97,13 +97,13 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns updated reservation' do
-        expect(JSON.parse(response.body)).to eq({ 'reservation' => reservation })
+        expect(JSON.parse(response.body)).to eq({ 'reservation' => reservation.as_json })
       end
     end
 
     context 'when fails' do
       let(:updating_result) { double(:fail, success?: false, errors: errors) }
-      let(:errors) { [4, 5, 6] }
+      let(:errors) { ['error1', 'error2', 'error3'] }
 
       it 'returns :unprocessable_entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -132,7 +132,7 @@ RSpec.describe ReservationsController do
 
     context 'when fails' do
       let(:deleting_result) { double(:fail, success?: false, errors: errors) }
-      let(:errors) { [4, 5, 6] }
+      let(:errors) { ['error1', 'error2', 'error3'] }
 
       it 'returns :unprocessable_entity status' do
         expect(response).to have_http_status(:unprocessable_entity)
