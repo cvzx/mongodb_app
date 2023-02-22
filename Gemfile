@@ -29,6 +29,7 @@ end
 
 group :test do
   gem 'rails-controller-testing'
+  gem 'rspec-json_expectations'
   gem 'simplecov', require: false
   gem 'simplecov-console', require: false
 end

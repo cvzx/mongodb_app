@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
+module Types
+  include Dry.Types()
+end
+
 class Reservation < Dry::Struct
-  attribute :id, 'integer'
-  attribute :hotel_name, 'string'
-  attribute :price, 'integer'
-  attribute :currency, 'string'
-  attribute :entry_date, 'date_time'
-  attribute :departure_date, 'date_time'
-  attribute :guest_name, 'string'
-  attribute :guest_email, 'string'
+  transform_keys(&:to_sym)
+
+  attribute :id, Types::Params::Integer
+  attribute :hotel_name, Types::Params::String
+  attribute :price, Types::Params::Integer
+  attribute :currency, Types::Params::String
+  attribute :entry_date, Types::Params::DateTime
+  attribute :departure_date, Types::Params::DateTime
+  attribute :guest_name, Types::Params::String
+  attribute :guest_email, Types::Params::String
 end
