@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class ReservationsController < ApplicationController
+  include Presenters
+
   def index
     fetching = reservations_service.list_all
 
     if fetching.success?
-      render json: { reservations: fetching.result }, status: :ok
+      render json: present_collection(fetching.result), status: :ok
     else
       render json: { errors: fetching.errors }, status: :unprocessable_entity
     end
@@ -15,7 +17,7 @@ class ReservationsController < ApplicationController
     fetching = reservations_service.find(params[:id])
 
     if fetching.success?
-      render json: { reservation: fetching.result }, status: :ok
+      render json: present(fetching.result), status: :ok
     else
       render json: { errors: fetching.errors }, status: :unprocessable_entity
     end
@@ -25,7 +27,7 @@ class ReservationsController < ApplicationController
     creating = reservations_service.create(reservation_params)
 
     if creating.success?
-      render json: { reservation: creating.result }, status: :ok
+      render json: present(creating.result), status: :ok
     else
       render json: { errors: creating.errors }, status: :unprocessable_entity
     end
@@ -35,7 +37,7 @@ class ReservationsController < ApplicationController
     updating = reservations_service.update(params[:id], reservation_params)
 
     if updating.success?
-      render json: { reservation: updating.result }, status: :ok
+      render json: present(updating.result), status: :ok
     else
       render json: { errors: updating.errors }, status: :unprocessable_entity
     end
@@ -60,5 +62,9 @@ class ReservationsController < ApplicationController
 
   def reservations_service
     ReservationsService.new
+  end
+
+  def presenter
+    JsonReservationPresenter
   end
 end
