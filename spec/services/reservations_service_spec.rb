@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ReservationsService do
-  subject(:reservations_service) { described_class.new(repo) }
+  subject(:reservations_service) { described_class.new(repo:) }
 
   let(:repo) { double }
 
