@@ -3,22 +3,28 @@
 require 'rails_helper'
 
 RSpec.describe ReservationsController do
-  let(:reservations_service_class) do
-    class_double('ReservationsService', new: mock_reservations_service)
-  end
+  let(:mock_service) { double }
 
-  let(:mock_reservations_service) { double }
+  let(:mock_presenter) { double(new: presented_reservation) }
+  let(:presented_reservation) { 'presented_reservation' }
 
   before do
-    reservations_service_class.as_stubbed_const
+    allow_any_instance_of(described_class).to receive(:reservations_service)
+      .and_return(mock_service)
+    allow_any_instance_of(described_class).to receive(:presenter).and_return(mock_presenter)
   end
 
   describe 'GET index' do
     let(:list_all_result) { double(:success, success?: true, result: reservations) }
     let(:reservations) { build_list(:reservation, 3) }
+    let(:presented_reservations) { reservations.map {|res| { id: res.id }} }
 
     before do
-      allow(mock_reservations_service).to receive(:list_all).and_return(list_all_result)
+      allow(mock_service).to receive(:list_all).and_return(list_all_result)
+
+      reservations.each do |res|
+        allow(mock_presenter).to receive(:new).with(res).and_return({ id: res.id })
+      end
 
       get :index
     end
@@ -29,7 +35,7 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns list of reservations' do
-        expect(response.body).to include_json({ 'reservations' => reservations.map(&:as_json) })
+        expect(response.body).to include_json(presented_reservations)
       end
     end
 
@@ -50,9 +56,11 @@ RSpec.describe ReservationsController do
   describe 'GET show' do
     let(:find_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
+    let(:presented_reservation) { { id: reservation.id } }
 
     before do
-      allow(mock_reservations_service).to receive(:find).and_return(find_result)
+      allow(mock_service).to receive(:find).and_return(find_result)
+      allow(mock_presenter).to receive(:new).with(reservation).and_return(presented_reservation)
 
       get :show, params: { id: reservation.id }
     end
@@ -63,7 +71,7 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns reservation' do
-        expect(response.body).to include_json({ 'reservation' => reservation.as_json })
+        expect(response.body).to include_json(presented_reservation)
       end
     end
 
@@ -84,10 +92,11 @@ RSpec.describe ReservationsController do
   describe 'POST create' do
     let(:creating_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
+    let(:presented_reservation) { { id: reservation.id } }
 
     before do
-      allow(mock_reservations_service).to receive(:create)
-        .and_return(creating_result)
+      allow(mock_service).to receive(:create).and_return(creating_result)
+      allow(mock_presenter).to receive(:new).with(reservation).and_return(presented_reservation)
 
       post :create, params: { reservation: reservation.attributes.except(:id) }
     end
@@ -98,7 +107,7 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns created reservation' do
-        expect(response.body).to include_json({ 'reservation' => reservation.as_json })
+        expect(response.body).to include_json(presented_reservation)
       end
     end
 
@@ -117,12 +126,14 @@ RSpec.describe ReservationsController do
   end
 
   describe 'PUT update' do
+    let(:update_params) { attributes_for(:reservation).except(:id) }
     let(:updating_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
-    let(:update_params) { attributes_for(:reservation).except(:id) }
+    let(:presented_reservation) { { id: reservation.id } }
 
     before do
-      allow(mock_reservations_service).to receive(:update).and_return(updating_result)
+      allow(mock_service).to receive(:update).and_return(updating_result)
+      allow(mock_presenter).to receive(:new).with(reservation).and_return(presented_reservation)
 
       put :update, params: { id: reservation.id, reservation: update_params }
     end
@@ -133,7 +144,7 @@ RSpec.describe ReservationsController do
       end
 
       it 'returns updated reservation' do
-        expect(response.body).to include_json({ 'reservation' => reservation.as_json })
+        expect(response.body).to include_json(presented_reservation)
       end
     end
 
@@ -155,7 +166,7 @@ RSpec.describe ReservationsController do
     let(:deleting_result) { double(:success, success?: true, result: nil) }
 
     before do
-      allow(mock_reservations_service).to receive(:delete).and_return(deleting_result)
+      allow(mock_service).to receive(:delete).and_return(deleting_result)
 
       put :destroy, params: {:id => 1}
     end
