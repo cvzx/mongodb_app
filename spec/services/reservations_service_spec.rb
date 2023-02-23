@@ -131,7 +131,7 @@ RSpec.describe ReservationsService do
   describe '#update' do
     subject(:update_reservation) { reservations_service.update(id, new_attributes) }
 
-    let(:id) { 123 }
+    let(:id) { SecureRandom.uuid }
     let(:old_attributes) { attributes_for(:reservation).merge(id:) }
     let(:new_attributes) { attributes_for(:reservation) }
     let(:reservation) { build(:reservation, old_attributes) }
@@ -178,7 +178,7 @@ RSpec.describe ReservationsService do
   describe '#delete' do
     subject(:delete_reservation) { reservations_service.delete(id) }
 
-    let(:id) { 123 }
+    let(:id) { SecureRandom.uuid }
     let(:reservation) { build(:reservation, id:) }
 
     before do

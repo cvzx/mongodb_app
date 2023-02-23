@@ -1,0 +1,12 @@
+development:
+  clients:
+    default:
+      uri: mongodb://db:27017/mongodb_app_development
+  options:
+    use_utc: true
+test:
+  clients:
+    default:
+      uri: mongodb://db:27017/mongodb_app_test
+  options:
+    use_utc: true

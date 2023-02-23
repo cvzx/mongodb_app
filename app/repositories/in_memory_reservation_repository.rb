@@ -10,11 +10,11 @@ class InMemoryReservationRepository
   end
 
   def find(id)
-    @reservations.find { |res| res.id == id.to_i }
+    @reservations.find { |res| res.id == id }
   end
 
   def create(attributes)
-    reservation = Reservation.new(attributes.merge(id: @reservations.last.id + 1))
+    reservation = Reservation.new(attributes.merge(id: SecureRandom.uuid))
 
     @reservations << reservation
 
