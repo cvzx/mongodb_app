@@ -7,7 +7,7 @@ end
 class Reservation < Dry::Struct
   transform_keys(&:to_sym)
 
-  attribute :id, Types::Params::Integer
+  attribute :id, Types::Params::String
   attribute :hotel_name, Types::Params::String
   attribute :price, Types::Params::Integer
   attribute :currency, Types::Params::String

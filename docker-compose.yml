@@ -8,10 +8,6 @@ services:
     volumes:
       - .:/app:cached
     user: "${UID}:${GID}"
-    environment:
-      - BEYOND_CLIENT_ID="${BEYOND_CLIENT_ID}"
-      - BEYOND_CLIENT_SECRET="${BEYOND_CLIENT_SECRET}"
-      - BEYOND_AUTH_CODE="${BEYOND_AUTH_CODE}"
     ports:
       - "3000:3000"
     tty: true
@@ -20,15 +16,12 @@ services:
       - db
 
   db:
-    image: postgres:latest
+    image: mongo:latest
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     volumes: 
-      - db:/var/lib/postgresql/data
+      - db:/data/db
     ports:
-      - "5432:5432"
+      - "27017:27017"
 
 volumes:
   db:

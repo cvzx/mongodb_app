@@ -6,6 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.1.0'
 
 gem 'dry-struct'
+gem 'mongoid'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 7.0.4', '>= 7.0.4.2'
 
@@ -28,6 +29,7 @@ group :development do
 end
 
 group :test do
+  gem 'database_cleaner-mongoid'
   gem 'rails-controller-testing'
   gem 'rspec-json_expectations'
   gem 'simplecov', require: false
