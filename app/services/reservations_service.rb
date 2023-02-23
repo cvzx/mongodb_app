@@ -14,7 +14,7 @@ class ReservationsService
     end
   end
 
-  def initialize(repo = InMemoryReservationRepository.new)
+  def initialize(repo: MongodbReservationRepository.new)
     @repo = repo
   end
 

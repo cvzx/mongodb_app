@@ -4,8 +4,7 @@ RSpec.describe "Reservations", type: :request do
   let(:reservations) { build_list(:reservation, 5) }
 
   before do
-    allow(InMemoryReservationRepository).to receive(:new)
-      .and_return(InMemoryReservationRepository.new(reservations:))
+    reservations.each { |res| create(:mongodb_reservation, res.attributes) }
   end
 
   describe 'GET /reservations' do
@@ -65,5 +64,4 @@ RSpec.describe "Reservations", type: :request do
       expect(response).to have_http_status(:success)
     end
   end
-
 end
