@@ -1,0 +1,21 @@
+h1 Reservation Details
+
+dl
+  dt ID:
+  dd = reservation.id
+  dt Hotel Name:
+  dd = reservation.hotel_name
+  dt Price:
+  dd = reservation.price
+  dt Currency:
+  dd = reservation.currency
+  dt Entry Date:
+  dd = reservation.entry_date.strftime('%Y-%m-%d')
+  dt Departure Date:
+  dd = reservation.departure_date.strftime('%Y-%m-%d')
+  dt Guest Name:
+  dd = reservation.guest_name
+  dt Guest Email:
+  dd = reservation.guest_email
+
+= link_to 'Back', reservations_path

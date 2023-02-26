@@ -1,0 +1,31 @@
+h1 Reservations
+
+table
+  thead
+    tr
+      th ID
+      th Hotel Name
+      th Price
+      th Currency
+      th Entry Date
+      th Departure Date
+      th Guest Name
+      th Guest Email
+      th Actions
+  tbody
+    - reservations.each do |reservation|
+      tr
+        td = reservation.id
+        td = reservation.hotel_name
+        td = reservation.price
+        td = reservation.currency
+        td = reservation.entry_date.strftime('%Y-%m-%d')
+        td = reservation.departure_date.strftime('%Y-%m-%d')
+        td = reservation.guest_name
+        td = reservation.guest_email
+        td
+          = link_to 'Show', reservation_path(reservation.id)
+          = link_to 'Edit', edit_reservation_path(reservation.id)
+          = button_to 'Delete', reservation_path(reservation.id), method: :delete, data: { confirm: 'Are you sure?' }
+
+= link_to 'New Reservation', new_reservation_path, class: 'button'

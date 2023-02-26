@@ -1,0 +1,29 @@
+h1 New Reservation
+
+= form_with(scope: :reservation, url: reservations_path) do |f|
+  .field
+    = f.label :hotel_name
+    = f.text_field :hotel_name
+  .field
+    = f.label :price
+    = f.text_field :price
+  .field
+    = f.label :currency
+    = f.text_field :currency
+  .field
+    = f.label :entry_date
+    = f.date_field :entry_date
+  .field
+    = f.label :departure_date
+    = f.date_field :departure_date
+  .field
+    = f.label :guest_name
+    = f.text_field :guest_name
+  .field
+    = f.label :guest_email
+    = f.email_field :guest_email
+
+  .actions
+    = f.submit 'Create Reservation'
+
+= link_to 'Back', reservations_path
