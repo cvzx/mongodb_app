@@ -9,6 +9,7 @@ gem "dry-monads"
 gem "dry-struct"
 gem "dry-validation"
 gem "mongoid"
+gem "slim"
 gem "puma", "~> 5.0"
 gem "rails", "~> 7.0.4", ">= 7.0.4.2"
 

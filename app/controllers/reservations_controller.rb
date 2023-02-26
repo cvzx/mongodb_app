@@ -6,16 +6,12 @@ class ReservationsController < ApplicationController
 
     if fetching.success?
       respond_to do |format|
-        format.html {
-          render(locals: { reservations: html_presenter.present_collection(fetching.result) })
-        }
-        format.json {
-          render(json: json_presenter.present_collection(fetching.result), status: :ok)
-        }
+        format.html { render(locals: { reservations: html_presenter.present(fetching.result) }) }
+        format.json { render(json: json_presenter.present(fetching.result), status: :ok) }
       end
     else
       respond_to do |format|
-        format.html
+        format.html { render(locals: { errors: fetching.errors }) }
         format.json { render(json: { errors: fetching.errors }, status: :unprocessable_entity) }
       end
     end
@@ -26,31 +22,49 @@ class ReservationsController < ApplicationController
 
     if fetching.success?
       respond_to do |format|
-        format.html
+        format.html {
+          render(locals: { reservation: html_presenter.present(fetching.result) })
+        }
         format.json {
           render(json: json_presenter.present(fetching.result), status: :ok)
         }
       end
     else
       respond_to do |format|
-        format.html
+        format.html { render(locals: { errors: fetching.errors }) }
         format.json { render(json: { errors: fetching.errors }, status: :unprocessable_entity) }
       end
     end
   end
+
+  def new; end
 
   def create
     creating = reservations_service.create(reservation_params)
 
     if creating.success?
       respond_to do |format|
-        format.html
+        format.html { redirect_to reservation_url(creating.result.id) }
         format.json { render(json: json_presenter.present(creating.result), status: :ok) }
       end
     else
       respond_to do |format|
-        format.html
+        format.html { render(locals: { errors: creating.errors }) }
         format.json { render(json: { errors: creating.errors }, status: :unprocessable_entity) }
+      end
+    end
+  end
+
+  def edit
+    finding = reservations_service.find_by_id(params[:id])
+
+    if finding.success?
+      respond_to do |format|
+        format.html { render(locals: { reservation: html_presenter.present(finding.result) }) }
+      end
+    else
+      respond_to do |format|
+        format.html { render(locals: { errors: finding.errors }) }
       end
     end
   end
@@ -60,12 +74,12 @@ class ReservationsController < ApplicationController
 
     if updating.success?
       respond_to do |format|
-        format.html
+        format.html { redirect_to reservation_path(params[:id]) }
         format.json { render(json: json_presenter.present(updating.result), status: :ok) }
       end
     else
       respond_to do |format|
-        format.html
+        format.html { render :edit, locals: { errors: updating.errors } }
         format.json { render(json: { errors: updating.errors }, status: :unprocessable_entity) }
       end
     end
@@ -76,7 +90,7 @@ class ReservationsController < ApplicationController
 
     if deleting.success?
       respond_to do |format|
-        format.html
+        format.html { redirect_to reservations_path }
         format.json { head(:ok) }
       end
     else

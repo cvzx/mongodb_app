@@ -1,0 +1,23 @@
+h1 Reservation Details
+
+dl
+  dt ID:
+  dd = reservation.id
+  dt Hotel Name:
+  dd = reservation.hotel_name
+  dt Price:
+  dd = reservation.price
+  dt Currency:
+  dd = reservation.currency
+  dt Entry Date:
+  dd = reservation.entry_date
+  dt Departure Date:
+  dd = reservation.departure_date
+  dt Guest Name:
+  dd = reservation.guest_name
+  dt Guest Email:
+  dd = reservation.guest_email
+
+= link_to 'Back', reservations_path
+= link_to 'Edit', edit_reservation_path(reservation.id)
+= button_to 'Delete', reservation_path(reservation.id), method: :delete, data: { confirm: 'Are you sure?' }
