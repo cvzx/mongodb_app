@@ -6,7 +6,9 @@ class ReservationsController < ApplicationController
 
     if fetching.success?
       respond_to do |format|
-        format.html
+        format.html {
+          render(locals: { reservations: html_presenter.present_collection(fetching.result) })
+        }
         format.json {
           render(json: json_presenter.present_collection(fetching.result), status: :ok)
         }
@@ -105,5 +107,9 @@ class ReservationsController < ApplicationController
 
   def json_presenter
     JsonReservationPresenter
+  end
+
+  def html_presenter
+    HtmlReservationPresenter
   end
 end
