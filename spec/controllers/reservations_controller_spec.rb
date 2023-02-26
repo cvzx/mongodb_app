@@ -5,13 +5,13 @@ require "rails_helper"
 RSpec.describe(ReservationsController) do
   let(:mock_service) { double }
 
-  let(:mock_presenter) { double(new: presented_reservation) }
+  let(:mock_presenter) { double }
   let(:presented_reservation) { "presented_reservation" }
 
   before do
     allow_any_instance_of(described_class).to(receive(:reservations_service)
       .and_return(mock_service))
-    allow_any_instance_of(described_class).to(receive(:presenter).and_return(mock_presenter))
+    allow_any_instance_of(described_class).to(receive(:json_presenter).and_return(mock_presenter))
   end
 
   describe "GET index" do
@@ -23,10 +23,12 @@ RSpec.describe(ReservationsController) do
       allow(mock_service).to(receive(:list_all).and_return(list_all_result))
 
       reservations.each do |res|
-        allow(mock_presenter).to(receive(:new).with(res).and_return({ id: res.id }))
+        allow(mock_presenter).to(receive(:present_collection)
+          .with(reservations)
+          .and_return(presented_reservations))
       end
 
-      get :index
+      get :index, format: :json
     end
 
     context "when success" do
@@ -60,9 +62,11 @@ RSpec.describe(ReservationsController) do
 
     before do
       allow(mock_service).to(receive(:find_by_id).with(reservation.id).and_return(find_result))
-      allow(mock_presenter).to(receive(:new).with(reservation).and_return(presented_reservation))
+      allow(mock_presenter).to(receive(:present)
+        .with(reservation)
+        .and_return(presented_reservation))
 
-      get :show, params: { id: reservation.id }
+      get :show, params: { id: reservation.id }, format: :json
     end
 
     context "when success" do
@@ -96,9 +100,11 @@ RSpec.describe(ReservationsController) do
 
     before do
       allow(mock_service).to(receive(:create).and_return(creating_result))
-      allow(mock_presenter).to(receive(:new).with(reservation).and_return(presented_reservation))
+      allow(mock_presenter).to(receive(:present)
+        .with(reservation)
+        .and_return(presented_reservation))
 
-      post :create, params: { reservation: reservation.attributes.except(:id) }
+      post :create, params: { reservation: reservation.attributes.except(:id) }, format: :json
     end
 
     context "when success" do
@@ -133,9 +139,11 @@ RSpec.describe(ReservationsController) do
 
     before do
       allow(mock_service).to(receive(:update).and_return(updating_result))
-      allow(mock_presenter).to(receive(:new).with(reservation).and_return(presented_reservation))
+      allow(mock_presenter).to(receive(:present)
+        .with(reservation)
+        .and_return(presented_reservation))
 
-      put :update, params: { id: reservation.id, reservation: update_params }
+      put :update, params: { id: reservation.id, reservation: update_params }, format: :json
     end
 
     context "when success" do
@@ -168,7 +176,7 @@ RSpec.describe(ReservationsController) do
     before do
       allow(mock_service).to(receive(:delete).and_return(deleting_result))
 
-      put :destroy, params: { id: 1 }
+      put :destroy, params: { id: 1 }, format: :json
     end
 
     context "when success" do
