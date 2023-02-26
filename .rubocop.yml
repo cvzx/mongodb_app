@@ -1,3 +1,6 @@
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
 require:
   - rubocop-rails
   - rubocop-rspec
@@ -15,6 +18,15 @@ Lint/AmbiguousBlockAssociation:
 
 Layout/LineLength:
   AllowedPatterns: ['(\A|\s)#']
+
+RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
 
 AllCops:
   NewCops: enable

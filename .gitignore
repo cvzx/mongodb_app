@@ -42,3 +42,4 @@ yarn-debug.log*
 /dcnvim.yml
 /tags
 *coverage
+/Session.vim
