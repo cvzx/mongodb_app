@@ -3,9 +3,8 @@
 require "rails_helper"
 
 RSpec.describe(ReservationsController) do
-  let(:mock_service) { double }
-
-  let(:mock_presenter) { double }
+  let(:mock_service) { instance_double(ReservationsService) }
+  let(:mock_presenter) { class_double(JsonReservationPresenter) }
   let(:presented_reservation) { "presented_reservation" }
 
   before do
@@ -15,16 +14,18 @@ RSpec.describe(ReservationsController) do
   end
 
   describe "GET index" do
-    let(:list_all_result) { double(:success, success?: true, result: reservations) }
     let(:reservations) { build_list(:reservation, 3) }
     let(:presented_reservations) { reservations.map { |res| { id: res.id } } }
+
+    let(:list_all_result) do
+      instance_double(ReservationsService::Result, success?: true, result: reservations)
+    end
 
     before do
       allow(mock_service).to(receive(:list_all).and_return(list_all_result))
 
       reservations.each do |res|
-        allow(mock_presenter).to(receive(:present_collection)
-          .with(reservations)
+        allow(mock_presenter).to(receive(:present).with(reservations)
           .and_return(presented_reservations))
       end
 
@@ -42,8 +43,11 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when fails" do
-      let(:list_all_result) { double(:fail, success?: false, errors: errors) }
       let(:errors) { ["error1", "error3", "error3"] }
+
+      let(:list_all_result) do
+        instance_double(ReservationsService::Result, success?: false, errors: errors)
+      end
 
       it "returns :unprocessable_entity status" do
         expect(response).to(have_http_status(:unprocessable_entity))
@@ -56,9 +60,12 @@ RSpec.describe(ReservationsController) do
   end
 
   describe "GET show" do
-    let(:find_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
     let(:presented_reservation) { { id: reservation.id } }
+
+    let(:find_result) do
+      instance_double(ReservationsService::Result, success?: true, result: reservation)
+    end
 
     before do
       allow(mock_service).to(receive(:find_by_id).with(reservation.id).and_return(find_result))
@@ -80,8 +87,11 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when fails" do
-      let(:find_result) { double(:fail, success?: false, errors: errors) }
       let(:errors) { ["error1", "error3", "error3"] }
+
+      let(:find_result) do
+        instance_double(ReservationsService::Result, success?: false, errors: errors)
+      end
 
       it "returns :unprocessable_entity status" do
         expect(response).to(have_http_status(:unprocessable_entity))
@@ -94,9 +104,12 @@ RSpec.describe(ReservationsController) do
   end
 
   describe "POST create" do
-    let(:creating_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
     let(:presented_reservation) { { id: reservation.id } }
+
+    let(:creating_result) do
+      instance_double(ReservationsService::Result, success?: true, result: reservation)
+    end
 
     before do
       allow(mock_service).to(receive(:create).and_return(creating_result))
@@ -118,8 +131,11 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when fails" do
-      let(:creating_result) { double(:fail, success?: false, errors: errors) }
       let(:errors) { ["error1", "error2", "error3"] }
+
+      let(:creating_result) do
+        instance_double(ReservationsService::Result, success?: false, errors: errors)
+      end
 
       it "returns :unprocessable_entity status" do
         expect(response).to(have_http_status(:unprocessable_entity))
@@ -133,9 +149,12 @@ RSpec.describe(ReservationsController) do
 
   describe "PUT update" do
     let(:update_params) { attributes_for(:reservation).except(:id) }
-    let(:updating_result) { double(:success, success?: true, result: reservation) }
     let(:reservation) { build(:reservation) }
     let(:presented_reservation) { { id: reservation.id } }
+
+    let(:updating_result) do
+      instance_double(ReservationsService::Result, success?: true, result: reservation)
+    end
 
     before do
       allow(mock_service).to(receive(:update).and_return(updating_result))
@@ -157,8 +176,11 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when fails" do
-      let(:updating_result) { double(:fail, success?: false, errors: errors) }
       let(:errors) { ["error1", "error2", "error3"] }
+
+      let(:updating_result) do
+        instance_double(ReservationsService::Result, success?: false, errors: errors)
+      end
 
       it "returns :unprocessable_entity status" do
         expect(response).to(have_http_status(:unprocessable_entity))
@@ -171,7 +193,9 @@ RSpec.describe(ReservationsController) do
   end
 
   describe "DELETE destroy" do
-    let(:deleting_result) { double(:success, success?: true, result: nil) }
+    let(:deleting_result) do
+      instance_double(ReservationsService::Result, success?: true, result: nil)
+    end
 
     before do
       allow(mock_service).to(receive(:delete).and_return(deleting_result))
@@ -186,8 +210,11 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when fails" do
-      let(:deleting_result) { double(:fail, success?: false, errors: errors) }
       let(:errors) { ["error1", "error2", "error3"] }
+
+      let(:deleting_result) do
+        instance_double(ReservationsService::Result, success?: false, errors: errors)
+      end
 
       it "returns :unprocessable_entity status" do
         expect(response).to(have_http_status(:unprocessable_entity))
