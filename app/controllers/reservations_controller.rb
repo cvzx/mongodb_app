@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 class ReservationsController < ApplicationController
-  include Presenters
-
   def index
     fetching = reservations_service.list_all
 
     if fetching.success?
-      render(json: present_collection(fetching.result), status: :ok)
+      respond_to do |format|
+        format.html
+        format.json {
+          render(json: json_presenter.present_collection(fetching.result), status: :ok)
+        }
+      end
     else
-      render(json: { errors: fetching.errors }, status: :unprocessable_entity)
+      respond_to do |format|
+        format.html
+        format.json { render(json: { errors: fetching.errors }, status: :unprocessable_entity) }
+      end
     end
   end
 
@@ -17,9 +23,17 @@ class ReservationsController < ApplicationController
     fetching = reservations_service.find_by_id(params[:id])
 
     if fetching.success?
-      render(json: present(fetching.result), status: :ok)
+      respond_to do |format|
+        format.html
+        format.json {
+          render(json: json_presenter.present(fetching.result), status: :ok)
+        }
+      end
     else
-      render(json: { errors: fetching.errors }, status: :unprocessable_entity)
+      respond_to do |format|
+        format.html
+        format.json { render(json: { errors: fetching.errors }, status: :unprocessable_entity) }
+      end
     end
   end
 
@@ -27,9 +41,15 @@ class ReservationsController < ApplicationController
     creating = reservations_service.create(reservation_params)
 
     if creating.success?
-      render(json: present(creating.result), status: :ok)
+      respond_to do |format|
+        format.html
+        format.json { render(json: json_presenter.present(creating.result), status: :ok) }
+      end
     else
-      render(json: { errors: creating.errors }, status: :unprocessable_entity)
+      respond_to do |format|
+        format.html
+        format.json { render(json: { errors: creating.errors }, status: :unprocessable_entity) }
+      end
     end
   end
 
@@ -37,9 +57,15 @@ class ReservationsController < ApplicationController
     updating = reservations_service.update(params[:id], reservation_params)
 
     if updating.success?
-      render(json: present(updating.result), status: :ok)
+      respond_to do |format|
+        format.html
+        format.json { render(json: json_presenter.present(updating.result), status: :ok) }
+      end
     else
-      render(json: { errors: updating.errors }, status: :unprocessable_entity)
+      respond_to do |format|
+        format.html
+        format.json { render(json: { errors: updating.errors }, status: :unprocessable_entity) }
+      end
     end
   end
 
@@ -47,9 +73,15 @@ class ReservationsController < ApplicationController
     deleting = reservations_service.delete(params[:id])
 
     if deleting.success?
-      head(:ok)
+      respond_to do |format|
+        format.html
+        format.json { head(:ok) }
+      end
     else
-      render(json: { errors: deleting.errors }, status: :unprocessable_entity)
+      respond_to do |format|
+        format.html
+        format.json { render(json: { errors: deleting.errors }, status: :unprocessable_entity) }
+      end
     end
   end
 
@@ -71,7 +103,7 @@ class ReservationsController < ApplicationController
     ReservationsService.new
   end
 
-  def presenter
+  def json_presenter
     JsonReservationPresenter
   end
 end
