@@ -46,10 +46,10 @@ class MongodbReservationRepository
   private
 
   def convert_mongo_record_to_reservation(record)
-    attributes = record.attributes.except('_id')
-    attributes['id'] = record.id.to_s
-    attributes['entry_date'] = record.entry_date.to_datetime
-    attributes['departure_date'] = record.departure_date.to_datetime
+    attributes = record.attributes.except("_id")
+    attributes["id"] = record.id.to_s
+    attributes["entry_date"] = record.entry_date.to_datetime
+    attributes["departure_date"] = record.departure_date.to_datetime
 
     Reservation.new(attributes)
   end

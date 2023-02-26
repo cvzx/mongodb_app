@@ -1,27 +1,29 @@
-require 'rails_helper'
+# frozen_string_literal: true
 
-RSpec.describe "Reservations", type: :request do
+require "rails_helper"
+
+RSpec.describe("Reservations") do
   let(:reservations) { build_list(:reservation, 5) }
 
   before do
     reservations.each { |res| create(:mongodb_reservation, res.attributes) }
   end
 
-  describe 'GET /reservations' do
+  describe "GET /reservations" do
     let(:expected_reservations) do
       reservations
         .as_json(only: [:hotel_name, :price, :entry_date, :departure_date, :guest_name])
     end
 
-    it 'returns list of reservations' do
-      get '/reservations'
+    it "returns list of reservations" do
+      get "/reservations"
 
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(expected_reservations)
+      expect(response).to(have_http_status(:success))
+      expect(response.body).to(include_json(expected_reservations))
     end
   end
 
-  describe 'GET /reservations/:id' do
+  describe "GET /reservations/:id" do
     let(:reservation) { reservations.sample }
     let(:id) { reservation.id }
 
@@ -30,11 +32,11 @@ RSpec.describe "Reservations", type: :request do
         .as_json(only: [:hotel_name, :price, :entry_date, :departure_date, :guest_name])
     end
 
-    it 'returns reservation' do
+    it "returns reservation" do
       get "/reservations/#{id}"
 
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(expected_reservation)
+      expect(response).to(have_http_status(:success))
+      expect(response.body).to(include_json(expected_reservation))
     end
   end
 
@@ -47,10 +49,10 @@ RSpec.describe "Reservations", type: :request do
     end
 
     it "returns created reservation" do
-      post '/reservations', params: params
+      post "/reservations", params: params
 
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(expected_reservation)
+      expect(response).to(have_http_status(:success))
+      expect(response.body).to(include_json(expected_reservation))
     end
   end
 
@@ -65,8 +67,8 @@ RSpec.describe "Reservations", type: :request do
     it "returns updated reservation" do
       put "/reservations/#{id}", params: params
 
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include_json(expected_reservation)
+      expect(response).to(have_http_status(:success))
+      expect(response.body).to(include_json(expected_reservation))
     end
   end
 
@@ -76,7 +78,7 @@ RSpec.describe "Reservations", type: :request do
     it "returns head :ok" do
       delete "/reservations/#{id}"
 
-      expect(response).to have_http_status(:success)
+      expect(response).to(have_http_status(:success))
     end
   end
 end

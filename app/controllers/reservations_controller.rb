@@ -7,19 +7,19 @@ class ReservationsController < ApplicationController
     fetching = reservations_service.list_all
 
     if fetching.success?
-      render json: present_collection(fetching.result), status: :ok
+      render(json: present_collection(fetching.result), status: :ok)
     else
-      render json: { errors: fetching.errors }, status: :unprocessable_entity
+      render(json: { errors: fetching.errors }, status: :unprocessable_entity)
     end
   end
 
   def show
-    fetching = reservations_service.find(params[:id])
+    fetching = reservations_service.find_by_id(params[:id])
 
     if fetching.success?
-      render json: present(fetching.result), status: :ok
+      render(json: present(fetching.result), status: :ok)
     else
-      render json: { errors: fetching.errors }, status: :unprocessable_entity
+      render(json: { errors: fetching.errors }, status: :unprocessable_entity)
     end
   end
 
@@ -27,9 +27,9 @@ class ReservationsController < ApplicationController
     creating = reservations_service.create(reservation_params)
 
     if creating.success?
-      render json: present(creating.result), status: :ok
+      render(json: present(creating.result), status: :ok)
     else
-      render json: { errors: creating.errors }, status: :unprocessable_entity
+      render(json: { errors: creating.errors }, status: :unprocessable_entity)
     end
   end
 
@@ -37,9 +37,9 @@ class ReservationsController < ApplicationController
     updating = reservations_service.update(params[:id], reservation_params)
 
     if updating.success?
-      render json: present(updating.result), status: :ok
+      render(json: present(updating.result), status: :ok)
     else
-      render json: { errors: updating.errors }, status: :unprocessable_entity
+      render(json: { errors: updating.errors }, status: :unprocessable_entity)
     end
   end
 
@@ -47,17 +47,24 @@ class ReservationsController < ApplicationController
     deleting = reservations_service.delete(params[:id])
 
     if deleting.success?
-      head :ok
+      head(:ok)
     else
-      render json: { errors: deleting.errors }, status: :unprocessable_entity
+      render(json: { errors: deleting.errors }, status: :unprocessable_entity)
     end
   end
 
   private
 
   def reservation_params
-    params.require(:reservation).permit(:hotel_name, :price, :currency, :entry_date,
-                                        :departure_date, :guest_name, :guest_email)
+    params.require(:reservation).permit(
+      :hotel_name,
+      :price,
+      :currency,
+      :entry_date,
+      :departure_date,
+      :guest_name,
+      :guest_email,
+    ).to_h
   end
 
   def reservations_service

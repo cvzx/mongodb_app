@@ -1,56 +1,46 @@
 # frozen_string_literal: true
 
 class ReservationsService
-  class Result
-    attr_accessor :result, :errors
+  prepend Resultable
 
-    def initialize(result: nil, errors: [])
-      @result = result
-      @errors = errors
-    end
-
-    def success?
-      errors.empty?
-    end
-  end
-
-  def initialize(repo: MongodbReservationRepository.new)
+  def initialize(repo: MongodbReservationRepository.new, validator: ReservationValidator.new)
     @repo = repo
+    @validator = validator
   end
 
   def list_all
-    as_result { repo.all }
+    repo.all
   end
 
-  def find(id)
-    as_result { repo.find(id) }
+  def find_by_id(id)
+    repo.find(id)
   end
 
   def create(attributes)
-    as_result { repo.create(attributes) }
+    validate!(attributes)
+
+    repo.create(attributes)
   end
 
   def update(id, attributes)
-    as_result do
-      reservation = repo.find(id)
-      repo.update(reservation, attributes)
-    end
+    validate!(attributes)
+
+    reservation = repo.find(id)
+    repo.update(reservation, attributes)
   end
 
   def delete(id)
-    as_result do
-      reservation = repo.find(id)
-      repo.delete(reservation)
-    end
+    reservation = repo.find(id)
+    repo.delete(reservation)
   end
 
   private
 
-  attr_reader :repo
+  attr_reader :repo, :validator
 
-  def as_result
-    Result.new(result: yield)
-  rescue StandardError => e
-    Result.new(errors: [e.message])
+  def validate!(attributes)
+    validation = validator.call(attributes)
+
+    raise ArgumentError, validation.errors.join(", ") unless validation.success?
   end
 end

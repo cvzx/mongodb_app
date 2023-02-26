@@ -12,16 +12,20 @@ class ReservationValidator < Dry::Validation::Contract
   end
 
   rule(:price) do
-    key.failure('Must be positive') unless values[:price].positive?
+    key.failure("Must be positive") unless values[:price].positive?
   end
 
   rule(:guest_email) do
-    key.failure('Invalid email') unless URI::MailTo::EMAIL_REGEXP.match?(values[:guest_email])
+    key.failure("Invalid email") unless URI::MailTo::EMAIL_REGEXP.match?(values[:guest_email])
   end
 
   rule(:departure_date) do
-    unless values[:departure_date] > values[:entry_date]
-      key.failure('Must be greater than entry date')
+    if values[:departure_date] <= values[:entry_date]
+      key.failure("Must be greater than entry date")
     end
+  end
+
+  def errors
+    super(full: true).to_h.values
   end
 end
