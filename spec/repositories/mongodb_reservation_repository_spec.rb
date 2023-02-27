@@ -9,7 +9,7 @@ RSpec.describe(MongodbReservationRepository) do
     let!(:mongo_records) { create_list(:mongodb_reservation, 5) }
 
     let(:expected_reservations) do
-      mongo_records.map { |res| convert_to_mongo_record_to_reservation(res) }
+      mongo_records.map { |res| to_reservation(res) }
     end
 
     it "returns list of mongodb reservation records" do
@@ -21,7 +21,7 @@ RSpec.describe(MongodbReservationRepository) do
     let!(:mongo_records) { create_list(:mongodb_reservation, 5) }
     let(:mongo_record) { mongo_records.sample }
     let(:id) { mongo_record.id }
-    let(:expected_reservation) { convert_to_mongo_record_to_reservation(mongo_record) }
+    let(:expected_reservation) { to_reservation(mongo_record) }
 
     it "returns reservation found by id" do
       expect(repo.find(id)).to(eq(expected_reservation))
@@ -46,16 +46,17 @@ RSpec.describe(MongodbReservationRepository) do
   describe "#update" do
     subject(:update) { repo.update(reservation, new_attributes) }
 
-    let(:reservation) { build(:reservation) }
-    let!(:mongo_record) { create(:mongodb_reservation, reservation.attributes) }
-    let(:old_attributes) { reservation.attributes.except(:id) }
+    let!(:mongo_record) { create(:mongodb_reservation) }
+    let(:reservation) { to_reservation(mongo_record) }
     let(:new_attributes) { attributes_for(:reservation).except(:id) }
+    let(:new_mongo_attributes) { to_mongo_attrs(new_attributes) }
     let(:updated_reservation) { build(:reservation, new_attributes.merge(id: reservation.id)) }
 
     it "updates existing record in mongodb" do
-      expect(mongo_record).to(have_attributes(old_attributes))
       update
-      expect(mongo_record.reload).to(have_attributes(new_attributes))
+
+      expect(mongo_record.reload).to(have_attributes(new_mongo_attributes.except(:user)))
+      expect(mongo_record.user).to(have_attributes(new_mongo_attributes.fetch(:user)))
     end
 
     it "returns updated reservation" do
@@ -67,7 +68,7 @@ RSpec.describe(MongodbReservationRepository) do
     subject(:delete) { repo.delete(reservation) }
 
     let!(:mongo_records) { create_list(:mongodb_reservation, 5) }
-    let(:reservation) { convert_to_mongo_record_to_reservation(mongo_records.sample) }
+    let(:reservation) { to_reservation(mongo_records.sample) }
 
     it "deletes existing mongodb record" do
       expect { delete }.to(change { repo.all.count }.by(-1))
@@ -80,12 +81,21 @@ RSpec.describe(MongodbReservationRepository) do
 
   private
 
-  def convert_to_mongo_record_to_reservation(mongo_record)
-    attrs = mongo_record.attributes.except("_id")
-    attrs["id"] = mongo_record.id.to_s
-    attrs["entry_date"] = mongo_record.entry_date.to_datetime
-    attrs["departure_date"] = mongo_record.departure_date.to_datetime
+  def to_reservation(mongo_record)
+    attributes = mongo_record.attributes.except("_id", "user")
+    attributes["id"] = mongo_record.id.to_s
+    attributes["entry_date"] = mongo_record.entry_date.to_datetime
+    attributes["departure_date"] = mongo_record.departure_date.to_datetime
+    attributes["guest_name"] = mongo_record.user.name
+    attributes["guest_email"] = mongo_record.user.email
 
-    Reservation.new(attrs)
+    Reservation.new(attributes)
+  end
+
+  def to_mongo_attrs(attrs)
+    attributes = attrs.except(:guest_name, :guest_email)
+    attributes[:user] = { name: attrs[:guest_name], email: attrs[:guest_email] }
+
+    attributes
   end
 end

@@ -3,11 +3,8 @@
 require "rails_helper"
 
 RSpec.describe("Reservations") do
-  let(:reservations) { build_list(:reservation, 5) }
-
-  before do
-    reservations.each { |res| create(:mongodb_reservation, res.attributes) }
-  end
+  let!(:mongo_records) { create_list(:mongodb_reservation, 5) }
+  let(:reservations) { mongo_records.map { |record| to_reservation(record) } }
 
   describe "GET /api/reservations" do
     let(:expected_reservations) do
@@ -80,5 +77,18 @@ RSpec.describe("Reservations") do
 
       expect(response).to(have_http_status(:success))
     end
+  end
+
+  private
+
+  def to_reservation(mongo_record)
+    attributes = mongo_record.attributes.except("_id", "user")
+    attributes["id"] = mongo_record.id.to_s
+    attributes["entry_date"] = mongo_record.entry_date.to_datetime
+    attributes["departure_date"] = mongo_record.departure_date.to_datetime
+    attributes["guest_name"] = mongo_record.user.name
+    attributes["guest_email"] = mongo_record.user.email
+
+    Reservation.new(attributes)
   end
 end
