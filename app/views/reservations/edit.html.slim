@@ -1,30 +1,31 @@
-h1 Edit Reservation
+.container
+  .reservation-form
+    h1 Edit Reservation
+    = form_with(scope: :reservation, url: reservation_path(reservation.id), method: :put) do |f|
+      .card
+        .card-body
+          .mb-3
+            = f.label :hotel_name, class: "form-label font-weight-bold"
+            = f.text_field :hotel_name, value: reservation.hotel_name, class: "form-control"
+          .mb-3
+            = f.label :price, class: "form-label font-weight-bold"
+            = f.text_field :price, value: reservation.price, class: "form-control"
+          .mb-3
+             = f.label :currency, class: "form-label font-weight-bold"
+             = f.text_field :currency, value: reservation.currency, class: "form-control"
+          .mb-3
+            = f.label :entry_date, class: "form-label font-weight-bold"
+            = f.date_field :entry_date, value: reservation.entry_date, class: "form-control"
+          .mb-3
+            = f.label :departure_date, class: "form-label font-weight-bold"
+            = f.date_field :departure_date, value: reservation.departure_date, class: "form-control"
+          .mb-3
+            = f.label :guest_name, class: "form-label font-weight-bold"
+            = f.text_field :guest_name, value: reservation.guest_name, class: "form-control"
+          .mb-3
+            = f.label :guest_email, class: "form-label font-weight-bold"
+            = f.email_field :guest_email, value: reservation.guest_email, class: "form-control"
 
-= form_with(scope: :reservation, url: reservation_path(reservation.id), method: :put) do |f|
-  .field
-    = f.label :hotel_name
-    = f.text_field :hotel_name, value: reservation.hotel_name
-  .field
-    = f.label :price
-    = f.text_field :price, value: reservation.price
-  .field
-    = f.label :currency
-    = f.text_field :currency, value: reservation.currency
-  .field
-    = f.label :entry_date
-    = f.date_field :entry_date, value: reservation.entry_date
-  .field
-    = f.label :departure_date
-    = f.date_field :departure_date, value: reservation.departure_date
-  .field
-    = f.label :guest_name
-    = f.text_field :guest_name, value: reservation.guest_name
-  .field
-    = f.label :guest_email
-    = f.email_field :guest_email, value: reservation.guest_email
-
-  .actions
-    = f.submit 'Update Reservation'
-
-= link_to 'Back', reservations_path
-
+          .actions
+            = f.submit 'Save', class: "btn btn-primary"
+            = link_to 'Back', reservations_path, class: "btn btn-secondary"

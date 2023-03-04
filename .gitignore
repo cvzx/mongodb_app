@@ -43,3 +43,6 @@ yarn-debug.log*
 /tags
 *coverage
 /Session.vim
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

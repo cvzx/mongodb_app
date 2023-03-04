@@ -37,7 +37,8 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def new; end
+  def new
+  end
 
   def create
     creating = reservations_service.create(reservation_params)

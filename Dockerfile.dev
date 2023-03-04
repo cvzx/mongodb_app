@@ -1,13 +1,13 @@
-  FROM ruby:3.1.0
-  RUN apt-get update -qq && apt-get install -y postgresql-client
+FROM ruby:3.1.0
+RUN apt-get update -qq && apt-get install -y postgresql-client nodejs yarn
 
-  RUN groupadd -g 1000 hzyy && useradd -u 1000 -g hzyy -m hzyy
-  USER hzyy
+RUN groupadd -g 1000 hzyy && useradd -u 1000 -g hzyy -m hzyy
 
-  WORKDIR /app
-  COPY Gemfile* .
-  RUN bundle install
+WORKDIR /app
+COPY Gemfile* .
+RUN bundle install
 
-  COPY . .
+USER hzyy
+COPY . .
 
-  CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0"]

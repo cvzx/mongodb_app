@@ -13,6 +13,11 @@ gem "slim"
 gem "puma", "~> 5.0"
 gem "rails", "~> 7.0.4", ">= 7.0.4.2"
 
+gem "bootstrap", "~> 5.2.2"
+
+gem "sassc-rails"
+gem "jquery-rails"
+
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "bootsnap", require: false
