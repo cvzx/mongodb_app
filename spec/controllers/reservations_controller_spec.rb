@@ -13,6 +13,26 @@ RSpec.describe(ReservationsController) do
     allow_any_instance_of(described_class).to(receive(:json_presenter).and_return(mock_presenter))
   end
 
+  shared_examples "a success" do
+    it "returns :ok status" do
+      expect(response).to(have_http_status(:ok))
+    end
+
+    it "returns expected content" do
+      expect(response.body).to(include_json(expected_content))
+    end
+  end
+
+  shared_examples "a fail" do
+    it "returns :unprocessable_entity status" do
+      expect(response).to(have_http_status(:unprocessable_entity))
+    end
+
+    it "returns fetching errors" do
+      expect(response.body).to(include_json({ "errors" => errors }))
+    end
+  end
+
   describe "GET index" do
     let(:reservations) { build_list(:reservation, 3) }
     let(:presented_reservations) { reservations.map { |res| { id: res.id } } }
@@ -23,23 +43,16 @@ RSpec.describe(ReservationsController) do
 
     before do
       allow(mock_service).to(receive(:list_all).and_return(list_all_result))
-
-      reservations.each do |res|
-        allow(mock_presenter).to(receive(:present).with(reservations)
-          .and_return(presented_reservations))
-      end
+      allow(mock_presenter).to(receive(:present).with(reservations)
+        .and_return(presented_reservations))
 
       get :index, format: :json
     end
 
     context "when success" do
-      it "returns :ok status" do
-        expect(response).to(have_http_status(:ok))
-      end
+      let(:expected_content) { presented_reservations }
 
-      it "returns list of reservations" do
-        expect(response.body).to(include_json(presented_reservations))
-      end
+      it_behaves_like "a success"
     end
 
     context "when fails" do
@@ -49,13 +62,7 @@ RSpec.describe(ReservationsController) do
         instance_double(ReservationsService::Result, success?: false, errors: errors)
       end
 
-      it "returns :unprocessable_entity status" do
-        expect(response).to(have_http_status(:unprocessable_entity))
-      end
-
-      it "returns fetching errors" do
-        expect(response.body).to(include_json({ "errors" => errors }))
-      end
+      it_behaves_like "a fail"
     end
   end
 
@@ -77,13 +84,9 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when success" do
-      it "returns :ok status" do
-        expect(response).to(have_http_status(:ok))
-      end
+      let(:expected_content) { presented_reservation }
 
-      it "returns reservation" do
-        expect(response.body).to(include_json(presented_reservation))
-      end
+      it_behaves_like "a success"
     end
 
     context "when fails" do
@@ -93,13 +96,7 @@ RSpec.describe(ReservationsController) do
         instance_double(ReservationsService::Result, success?: false, errors: errors)
       end
 
-      it "returns :unprocessable_entity status" do
-        expect(response).to(have_http_status(:unprocessable_entity))
-      end
-
-      it "returns fetching errors" do
-        expect(response.body).to(include_json({ "errors" => errors }))
-      end
+      it_behaves_like "a fail"
     end
   end
 
@@ -121,13 +118,9 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when success" do
-      it "returns :ok status" do
-        expect(response).to(have_http_status(:ok))
-      end
+      let(:expected_content) { presented_reservation }
 
-      it "returns created reservation" do
-        expect(response.body).to(include_json(presented_reservation))
-      end
+      it_behaves_like "a success"
     end
 
     context "when fails" do
@@ -137,13 +130,7 @@ RSpec.describe(ReservationsController) do
         instance_double(ReservationsService::Result, success?: false, errors: errors)
       end
 
-      it "returns :unprocessable_entity status" do
-        expect(response).to(have_http_status(:unprocessable_entity))
-      end
-
-      it "returns creating errors" do
-        expect(response.body).to(include_json({ "errors" => errors }))
-      end
+      it_behaves_like "a fail"
     end
   end
 
@@ -166,13 +153,9 @@ RSpec.describe(ReservationsController) do
     end
 
     context "when success" do
-      it "returns :ok status" do
-        expect(response).to(have_http_status(:ok))
-      end
+      let(:expected_content) { presented_reservation }
 
-      it "returns updated reservation" do
-        expect(response.body).to(include_json(presented_reservation))
-      end
+      it_behaves_like "a success"
     end
 
     context "when fails" do
@@ -182,13 +165,7 @@ RSpec.describe(ReservationsController) do
         instance_double(ReservationsService::Result, success?: false, errors: errors)
       end
 
-      it "returns :unprocessable_entity status" do
-        expect(response).to(have_http_status(:unprocessable_entity))
-      end
-
-      it "returns updating errors" do
-        expect(response.body).to(include_json({ "errors" => errors }))
-      end
+      it_behaves_like "a fail"
     end
   end
 
@@ -216,13 +193,7 @@ RSpec.describe(ReservationsController) do
         instance_double(ReservationsService::Result, success?: false, errors: errors)
       end
 
-      it "returns :unprocessable_entity status" do
-        expect(response).to(have_http_status(:unprocessable_entity))
-      end
-
-      it "returns updating errors" do
-        expect(response.body).to(include_json({ "errors" => errors }))
-      end
+      it_behaves_like "a fail"
     end
   end
 end
