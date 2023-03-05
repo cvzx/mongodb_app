@@ -2,13 +2,13 @@
 
 class ReservationValidator < Dry::Validation::Contract
   params do
-    required(:hotel_name).value(:string)
+    required(:hotel_name).filled(:string)
     required(:price).value(:integer)
     required(:currency).value(:string)
     required(:entry_date).value(:date_time)
     required(:departure_date).value(:date_time)
-    required(:guest_name).value(:string)
-    required(:guest_email).value(:string)
+    required(:guest_name).filled(:string)
+    required(:guest_email).filled(:string)
   end
 
   rule(:price) do
@@ -23,9 +23,5 @@ class ReservationValidator < Dry::Validation::Contract
     if values[:departure_date] <= values[:entry_date]
       key.failure("Must be greater than entry date")
     end
-  end
-
-  def errors
-    super(full: true).to_h.values
   end
 end

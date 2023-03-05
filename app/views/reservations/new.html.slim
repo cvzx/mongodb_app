@@ -1,30 +1,32 @@
 .container
   .reservation-form
     h1 New Reservation
+    - if flash[:alert].present?
+      .alert.alert-danger= flash[:alert]
     = form_with(scope: :reservation, url: reservations_path) do |f|
       .card
         .card-body
           .mb-3
             = f.label :hotel_name, class: "form-label font-weight-bold"
-            = f.text_field :hotel_name, class: "form-control"
+            = f.text_field :hotel_name, value: params[:hotel_name], class: "form-control"
           .mb-3
             = f.label :price, class: "form-label font-weight-bold"
-            = f.text_field :price, class: "form-control"
+            = f.text_field :price, value: params[:price], class: "form-control"
           .mb-3
              = f.label :currency, class: "form-label font-weight-bold"
-             = f.text_field :currency, class: "form-control"
+             = f.text_field :currency,value: params[:currency], class: "form-control"
           .mb-3
             = f.label :entry_date, class: "form-label font-weight-bold"
-            = f.date_field :entry_date, class: "form-control"
+            = f.date_field :entry_date,value: params[:entry_date], class: "form-control"
           .mb-3
             = f.label :departure_date, class: "form-label font-weight-bold"
-            = f.date_field :departure_date, class: "form-control"
+            = f.date_field :departure_date, value: params[:departure_date],class: "form-control"
           .mb-3
             = f.label :guest_name, class: "form-label font-weight-bold"
-            = f.text_field :guest_name, class: "form-control"
+            = f.text_field :guest_name,value: params[:guest_name], class: "form-control"
           .mb-3
             = f.label :guest_email, class: "form-label font-weight-bold"
-            = f.email_field :guest_email, class: "form-control"
+            = f.email_field :guest_email, value: params[:guest_email] ,class: "form-control"
 
           .actions
             = f.submit 'Save', class: "btn btn-primary"

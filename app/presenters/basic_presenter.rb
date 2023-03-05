@@ -5,14 +5,14 @@ class BasicPresenter
     @object = object
   end
 
-  def self.present(object)
-    case object
-    when Enumerable
-      object.map { |item| new(item) }
-    else
-      new(object)
+  class << self
+    def present(object)
+      case object
+      when Enumerable
+        object.map { |item| new(item) }
+      else
+        new(object)
+      end
     end
   end
 end
-
-

@@ -1,6 +1,8 @@
 .container
   .reservation-form
     h1 Edit Reservation
+    - if flash[:alert].present?
+      .alert.alert-danger= flash[:alert]
     = form_with(scope: :reservation, url: reservation_path(reservation.id), method: :put) do |f|
       .card
         .card-body

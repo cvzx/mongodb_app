@@ -138,11 +138,12 @@ RSpec.describe(ReservationsService) do
     end
 
     context "when attributes invalid" do
-      let(:validation_errors) { ["error1", "error2"] }
+      let(:validation_errors) { { error1: "error message1", error2: "error message2" } }
+      let(:validation_failed) { double(success?: false) }
 
       before do
-        allow(failed).to(receive(:errors).and_return(validation_errors))
-        allow(validator).to(receive(:call).and_return(failed))
+        allow(validator).to(receive(:call).and_return(validation_failed))
+        allow(validation_failed).to(receive(:errors).and_return(validation_errors))
       end
 
       it "fails" do
@@ -150,7 +151,7 @@ RSpec.describe(ReservationsService) do
       end
 
       it "returns validation errors" do
-        expect(create_reservation.errors).to(eq([validation_errors.join(", ")]))
+        expect(create_reservation.errors).to(eq([validation_errors.values.join(", ")]))
       end
     end
   end
@@ -208,11 +209,12 @@ RSpec.describe(ReservationsService) do
     end
 
     context "when attributes invalid" do
-      let(:validation_errors) { ["error1", "error2"] }
+      let(:validation_errors) { { error1: "error message1", error2: "error message2" } }
+      let(:validation_failed) { double(success?: false) }
 
       before do
-        allow(failed).to(receive(:errors).and_return(validation_errors))
-        allow(validator).to(receive(:call).and_return(failed))
+        allow(validation_failed).to(receive(:errors).and_return(validation_errors))
+        allow(validator).to(receive(:call).and_return(validation_failed))
       end
 
       it "fails" do
@@ -220,7 +222,7 @@ RSpec.describe(ReservationsService) do
       end
 
       it "returns validation errors" do
-        expect(update_reservation.errors).to(eq([validation_errors.join(", ")]))
+        expect(update_reservation.errors).to(eq([validation_errors.values.join(", ")]))
       end
     end
   end

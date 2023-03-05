@@ -41,6 +41,8 @@ class ReservationsService
   def validate!(attributes)
     validation = validator.call(attributes)
 
-    raise ArgumentError, validation.errors.join(", ") unless validation.success?
+    return if validation.success?
+
+    raise ArgumentError, validation.errors(full: true).to_h.values.join(", ")
   end
 end
