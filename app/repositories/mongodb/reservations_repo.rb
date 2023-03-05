@@ -15,7 +15,7 @@ module Mongodb
     end
 
     def create(attributes)
-      created_record = reservations.create!(to_mongo_attrs(attributes))
+      created_record = reservations.create!(to_document(attributes))
 
       to_reservation(created_record)
     end
@@ -23,7 +23,7 @@ module Mongodb
     def update(reservation, attributes)
       record = reservations.find(reservation.id)
 
-      record.update_attributes!(to_mongo_attrs(attributes))
+      record.update_attributes!(to_document(attributes))
 
       to_reservation(record)
     end
@@ -36,26 +36,22 @@ module Mongodb
 
     private
 
-    def reservations
-      Mongodb::Models::Reservation
-    end
-
     def to_reservation(record)
-      attributes = record.attributes.except("_id", "user")
-      attributes["id"] = record.id.to_s
-      attributes["entry_date"] = record.entry_date.to_datetime
-      attributes["departure_date"] = record.departure_date.to_datetime
-      attributes["guest_name"] = record.user.name
-      attributes["guest_email"] = record.user.email
-
-      ::Reservation.new(attributes)
+      converter.to_reservation(record)
     end
 
-    def to_mongo_attrs(attrs)
-      attributes = attrs.except(:guest_name, :guest_email)
-      attributes[:user] = { name: attrs[:guest_name], email: attrs[:guest_email] }
+    def to_document(attributes)
+      reservation = Reservation.new(attributes)
 
-      attributes
+      converter.to_mongodb_document(reservation)
+    end
+
+    def reservations
+      Models::Reservation
+    end
+
+    def converter
+      ReservationConverter
     end
   end
 end
