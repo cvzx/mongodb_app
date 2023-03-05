@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe(MongodbReservationRepository) do
+RSpec.describe(Mongodb::ReservationsRepo) do
   subject(:repo) { described_class.new }
 
   describe "#all" do

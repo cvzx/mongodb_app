@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :mongodb_reservation, class: "MongodbReservationRepository::Reservation" do
+  factory :mongodb_reservation, class: "Mongodb::Models::Reservation" do
     id { SecureRandom.uuid }
     hotel_name { Faker::Company.name }
     price { rand(1..10_000) }

@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe(ReservationsService) do
   subject(:reservations_service) { described_class.new(repo:, validator:) }
 
-  let(:repo) { instance_double(MongodbReservationRepository) }
+  let(:repo) { instance_double(Mongodb::ReservationsRepo) }
   let(:validator) { instance_double(ReservationValidator) }
   let(:success) { instance_double(Resultable::Result, success?: true) }
   let(:failed) { instance_double(Resultable::Result, success?: false) }

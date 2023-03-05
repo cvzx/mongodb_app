@@ -3,9 +3,9 @@
 class ReservationsService
   prepend Resultable
 
-  def initialize(repo: MongodbReservationRepository.new, validator: ReservationValidator.new)
-    @repo = repo
-    @validator = validator
+  def initialize(repo: nil, validator: nil)
+    @repo = repo || Mongodb::ReservationsRepo.new
+    @validator = validator || ReservationValidator.new
   end
 
   def list_all
